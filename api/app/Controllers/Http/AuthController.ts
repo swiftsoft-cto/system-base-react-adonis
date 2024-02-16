@@ -1,5 +1,9 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext' 
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import PasswordReset from 'App/Models/PasswordResets'
+import Users from 'App/Models/Users'
 import AuthService from 'App/Services/AuthService'
+
+import { DateTime } from 'luxon'
 
 export default class AuthController {
     private authService = new AuthService()
@@ -13,6 +17,39 @@ export default class AuthController {
                 return response.status(401).json({ isValid: false, message: 'Token expirado' })
             }
             return response.status(401).json({ isValid: false, message: 'Token inválido' })
+        }
+    }
+
+    public async resetPassword({ request, response }: HttpContextContract) {
+        try {
+            const { token, password } = request.only(['token', 'password'])
+    
+            // Primeiro, tente encontrar o token que ainda não expirou
+            const passwordReset = await PasswordReset.query()
+                .where('token', token)
+                .where('expires_at', '>', DateTime.now().toSQL())
+                .first()
+    
+            // Se não encontrar o token (ou se estiver expirado), retorne um erro específico
+            if (!passwordReset) {
+                return response.badRequest({ message: 'Token inválido ou expirado.' })
+            }
+    
+            // Encontrou o token e está válido, prossiga para encontrar o usuário
+            const user = await Users.findOrFail(passwordReset.userId)
+            user.password = password
+            await user.save()
+    
+            // Apagar o token após o uso
+            await passwordReset.delete()
+    
+            // Resposta de sucesso
+            return response.ok({ message: 'Senha redefinida com sucesso.' })
+        } catch (error) {
+            // Log do erro para depuração
+            console.error(error.message)
+            // Tratamento de erro genérico
+            return response.internalServerError({ message: 'Erro ao redefinir a senha. Por favor, tente novamente mais tarde.' })
         }
     }
 

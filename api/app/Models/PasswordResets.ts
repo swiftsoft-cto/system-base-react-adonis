@@ -1,14 +1,15 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
+import User from 'App/Models/Users'
 
-export default class PasswordResets extends BaseModel {
+export default class PasswordReset extends BaseModel {
   public static table = 'password_resets'
 
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public user_id: number
+  public userId: number
 
   @column()
   public token: string
@@ -21,4 +22,7 @@ export default class PasswordResets extends BaseModel {
 
   @column.dateTime({ autoCreate: false, autoUpdate: true })
   public updated_at: DateTime
+
+  @belongsTo(() => User)
+  public user: BelongsTo<typeof User>
 }

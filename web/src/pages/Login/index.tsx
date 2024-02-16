@@ -168,7 +168,7 @@ export default function Login() {
 
     try {
       // Substitua a URL pelo endpoint correto da sua API
-      await api.post("send-mail", { email: forgotPasswordEmail });
+      await api.post("recover-token", { email: forgotPasswordEmail });
       setAlertInfo({
         severity: "success",
         message:

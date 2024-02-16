@@ -1,11 +1,8 @@
 import Env from '@ioc:Adonis/Core/Env';
 import nodemailer from 'nodemailer';
-import PasswordResets from 'App/Models/PasswordResets';
-import { v4 as uuidv4 } from 'uuid';
-import { DateTime } from 'luxon'; 
 
 class MailService {
-    transporter;
+    private transporter;
 
     constructor() {
         this.transporter = nodemailer.createTransport({
@@ -19,8 +16,7 @@ class MailService {
         });
     }
 
-    async sendEmail(to: string) {
-       const token =  await this.createToken();
+    async sendRecoveryEmail(email: string, token: string) {
         const resetPasswordUrl = `https://plataforma.swiftsoft.com.br/redefinir-senha/${token}`;
 
         const bodyMail = `
@@ -237,37 +233,21 @@ class MailService {
 `
         const mailOptions = {
             from: `"${Env.get('SMTP_FROM_NAME')}" <${Env.get('SMTP_FROM_MAIL')}>`,
-            to: to,
+            to: email,
             subject: 'Recuperação de senha',
-            html: bodyMail
+            html: bodyMail,
         };
 
         try {
             const info = await this.transporter.sendMail(mailOptions);
             console.log('Email enviado: %s', info.messageId);
+            return { success: true, messageId: info.messageId };
         } catch (error) {
             console.error('Erro ao enviar e-mail:', error);
+            return { success: false, error: error };
         }
     }
 
-   
-
-    
-    async createToken(): Promise<string> {
-        const token = uuidv4(); // Gera um token único
-    
-        // Define o token para expirar em 1 hora usando o DateTime do Luxon
-        const expiresAt = DateTime.now().plus({ hours: 1 });
-    
-        // Cria um novo registro no banco de dados usando o modelo PasswordReset
-        await PasswordResets.create({
-            token: token,
-            expires_at: expiresAt, // Passa o DateTime diretamente
-        });
-    
-        return token; // Retorna o token para ser enviado ao usuário
-    }
-    
 }
 
 export default new MailService();

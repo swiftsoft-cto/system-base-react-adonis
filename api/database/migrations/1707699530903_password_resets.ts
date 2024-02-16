@@ -9,7 +9,9 @@ export default class PasswordResets extends BaseSchema {
       table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
       table.string('token').notNullable()
       table.timestamp('expires_at').notNullable()
-      table.timestamps(true) 
+      table.timestamp('created_at', { useTz: true }).notNullable().defaultTo(this.now())
+      table.timestamp('updated_at', { useTz: true }).nullable()
+      table.timestamp('deleted_at', { useTz: true }).nullable() 
     })
   }
 

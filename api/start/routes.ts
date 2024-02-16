@@ -11,11 +11,12 @@ Route.group(() => {
   Route.post('login', 'AuthController.login')
   Route.post('logout', 'AuthController.logout')
   Route.get('validate-token', 'AuthController.validateToken')
+  Route.post('reset-password', 'AuthController.resetPassword')
 }).prefix('api')
 
 //Mail
 Route.group(() => {
-  Route.post('send-mail', 'MailController.sendMail')
+  Route.post('recover-token', 'MailController.recoverToken')
 }).prefix('api')
 
 //Usuário
