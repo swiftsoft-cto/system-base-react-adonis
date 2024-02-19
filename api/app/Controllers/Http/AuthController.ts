@@ -23,26 +23,34 @@ export default class AuthController {
     public async resetPassword({ request, response }: HttpContextContract) {
         try {
             const { token, password } = request.only(['token', 'password'])
-    
+
+            // Validação da senha
+            const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>çÇ])[A-Za-z\d!@#$%^&*(),.?":{}|<>çÇ]{8,}$/
+            if (!password || !passwordRegex.test(password)) {
+                return response.badRequest({
+                    message: 'A senha deve ter pelo menos 8 caracteres, incluindo pelo menos uma letra maiúscula, um número e um caractere especial.'
+                })
+            }
+
             // Primeiro, tente encontrar o token que ainda não expirou
             const passwordReset = await PasswordReset.query()
                 .where('token', token)
                 .where('expires_at', '>', DateTime.now().toSQL())
                 .first()
-    
+
             // Se não encontrar o token (ou se estiver expirado), retorne um erro específico
             if (!passwordReset) {
                 return response.badRequest({ message: 'Token inválido ou expirado.' })
             }
-    
+
             // Encontrou o token e está válido, prossiga para encontrar o usuário
             const user = await Users.findOrFail(passwordReset.userId)
             user.password = password
             await user.save()
-    
+
             // Apagar o token após o uso
             await passwordReset.delete()
-    
+
             // Resposta de sucesso
             return response.ok({ message: 'Senha redefinida com sucesso.' })
         } catch (error) {
@@ -52,6 +60,7 @@ export default class AuthController {
             return response.internalServerError({ message: 'Erro ao redefinir a senha. Por favor, tente novamente mais tarde.' })
         }
     }
+
 
     public async login({ auth, request, response }: HttpContextContract) {
         const email = request.input('email')

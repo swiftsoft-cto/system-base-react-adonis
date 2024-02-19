@@ -1,47 +1,60 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Users from 'App/Models/Users';
+import User from 'App/Models/Users'; // Verifique se o nome do modelo está correto
 
-export default class RegisterController {
+export default class UserSettingsController {
 
-  public async userSettings({ auth, response }: HttpContextContract) {
-    const loggedUser = auth.user;
-    const userId = loggedUser?.id;
-
-    if (userId) {
-      const user = await Users.query().where('id', userId).first()
-
-      if (user?.id_profile === 1) {
-
-        const admin = await Users.query().where('id', userId).first()
-        return response.json({ name: admin?.name, email: admin?.email, id: admin?.id })
-
-      } 
-
-      else if (user?.id_profile === 2) {
-
-        const client = await Users.query().where('id', userId).first()
-        return response.json({ name: client?.name, email: client?.email, id: client?.id })
-
-      } 
-
-      else if (user?.id_profile === 3) {
-
-        const projectManager = await Users.query().where('id', userId).first()
-        return response.json({ name: projectManager?.name, email: projectManager?.email, id: projectManager?.id })
-
-      } 
+  // O método accessLevel parece adequado, mas poderia ser simplificado se auth.user já contiver id_profile.
+  public async accessLevel({ auth, response }: HttpContextContract) {
+    if (!auth.user) {
+      return response.json({ 'error': 'Usuário não autenticado.' });
     }
-    return response.json({ 'error': 'Ocorreu um erro ao consultar o usuário.' });
+
+    return response.json({ nivel: auth.user.id_profile });
   }
 
-  public async accessLevel({ auth, response }: HttpContextContract) {
-    const loggedUser = auth.user;
-    const userId = loggedUser?.id
+  public async userSettings({ auth, response }: HttpContextContract) {
+    const user = auth.user;
 
-    if (userId) {
-      const user = await Users.query().where('id', userId).first()
-      return response.json({ nivel: user?.id_profile })
+    if (!user) {
+      return response.status(404).json({ error: 'Usuário não autenticado.' });
     }
-    return response.json({ 'error': 'Ocorreu um erro ao consultar o usuário.' })
-  }
+
+    // Assumindo que você deseja obter informações frescas do banco de dados
+    const freshUser = await User.query().where('id', user.id).first();
+
+    if (!freshUser) {
+      return response.status(404).json({ error: 'Usuário não encontrado.' });
+    }
+
+    return response.json({
+      name: freshUser.name,
+      email: freshUser.email,
+      id: freshUser.id,
+      id_profile: freshUser.id_profile
+    });
+  }
+
+  public async editUserSettings({ auth, request, response }: HttpContextContract) {
+    const user = auth.user;
+
+    if (!user) {
+      return response.status(404).json({ error: 'Usuário não autenticado.' });
+    }
+
+    try {
+      // Validações ou lógicas de negócio antes de aplicar as mudanças
+      const { name, email } = request.only(['name', 'email']);
+
+      user.merge({ name, email });
+      await user.save();
+
+      return response.ok({ message: 'Usuário atualizado com sucesso.', user });
+    } catch (error) {
+      console.error(error); // Considerar logar o erro de maneira adequada
+      return response.internalServerError({ error: 'Erro ao atualizar configurações do usuário.' });
+    }
+  }
+
+
+
 }

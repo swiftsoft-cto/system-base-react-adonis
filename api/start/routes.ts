@@ -22,6 +22,7 @@ Route.group(() => {
 //Usuário
 Route.group(() => {
   Route.get('user-settings', 'UserController.userSettings')
+  Route.put('user-settings-edit', 'UserController.editUserSettings')
   Route.post('access-level', 'UserController.accessLevel')
 }).prefix('api')
 .middleware('auth')

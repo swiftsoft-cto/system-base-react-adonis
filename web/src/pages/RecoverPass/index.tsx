@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import api from '../../services/api';
-import {  useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Container,
   CssBaseline,
@@ -10,21 +10,31 @@ import {
   Button,
   CircularProgress,
   ThemeProvider,
+  AlertColor,
 } from '@mui/material';
 import themeMonocromatico from '../../components/Theme';
+import CustomAlert from '../../components/CustomAlert'; // Importação do CustomAlert
+import Logo from "../../assets/images/logo.png";
 
 const RecoverPass = () => {
+  const navigate = useNavigate();
+
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [alertInfo, setAlertInfo] = useState<{
+    severity: AlertColor;
+    message: string;
+  }>({
+    severity: "error", // Isso garante que severity seja do tipo AlertColor
+    message: "",
+  });
 
   const validatePasswords = () => {
     if (password !== confirmPassword) {
-      setError('As senhas não coincidem.');
+      setAlertInfo({ severity: 'error', message: 'As senhas não coincidem.' });
       return false;
     }
-    setError('');
     return true;
   };
 
@@ -38,7 +48,7 @@ const RecoverPass = () => {
     setLoading(true);
 
     if (!token) {
-      setError('Token não encontrado.');
+      setAlertInfo({ severity: 'error', message: 'Token não encontrado.' });
       setLoading(false);
       return;
     }
@@ -48,19 +58,22 @@ const RecoverPass = () => {
         password,
         token,
       });
-    
-      setPassword('');
-      setConfirmPassword('');
-      setError('');
 
-      console.log(response.data)
-    } catch (error) {
+      // Supondo que a API retorna { message: "Senha redefinida com sucesso!" } em caso de sucesso
+      setAlertInfo({ severity: 'success', message: response.data.message || "Senha redefinida com sucesso!" });
+    } catch (error: any) {
       console.error(error);
-      setError('Ocorreu um erro ao tentar redefinir a senha.');
+      // Aqui assumimos que a resposta de erro também contém um campo message
+      // Você pode precisar ajustar isso com base no formato exato da resposta de erro da sua API
+      const errorMessage = error.response && error.response.data.message ? error.response.data.message : 'Ocorreu um erro ao tentar redefinir a senha, tente novamente mais tarde.';
+      setAlertInfo({ severity: 'error', message: errorMessage });
     } finally {
       setLoading(false);
     }
-    
+
+  };
+  const handleGoToLogin = () => {
+    navigate('/'); // Substitua '/login' pelo seu caminho correto para a página de login
   };
 
   return (
@@ -75,6 +88,7 @@ const RecoverPass = () => {
             alignItems: 'center',
           }}
         >
+          <img src={Logo} alt="Logo" style={{ width: "80px" }} />
           <Typography component="h1" variant="h5">
             Redefinição de Senha
           </Typography>
@@ -113,14 +127,23 @@ const RecoverPass = () => {
             >
               {loading ? <CircularProgress size={24} /> : 'Redefinir Senha'}
             </Button>
-            {error && (
-              <Typography color="error" variant="body2">
-                {error}
-              </Typography>
+            {alertInfo.severity === 'success' && (
+              <Button
+                variant="outlined"
+                sx={{ mt: 2 }}
+                onClick={handleGoToLogin}
+              >
+                acessar minha conta
+              </Button>
             )}
           </Box>
         </Box>
       </Container>
+      <CustomAlert
+        severity={alertInfo.severity}
+        message={alertInfo.message}
+      />
+
     </ThemeProvider>
   );
 };
