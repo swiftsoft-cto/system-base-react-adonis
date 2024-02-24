@@ -57,6 +57,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({
                 value={userSettings.email}
                 onChange={handleChange}
                 sx={{ my: 2 }}
+                disabled
             />
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
                 <Button variant="contained" onClick={handleSaveChanges}>

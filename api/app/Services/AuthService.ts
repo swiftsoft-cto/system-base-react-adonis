@@ -19,8 +19,37 @@ export default class AuthService {
 
         }
     }
+    // Service
+    async register(data) {
+        try {
+            const userExists = await Users.findBy('email', data.email);
+            if (userExists) {
+                return { success: "error", message: 'E-mail já está em uso.' };
+            }
+
+            const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>çÇ])[A-Za-z\d!@#$%^&*(),.?":{}|<>çÇ]{8,}$/
+            if (!data.password || !passwordRegex.test(data.password)) {
+                return { success: "error", message: 'A senha deve ter pelo menos 8 caracteres, incluindo pelo menos uma letra maiúscula, um número e um caractere especial.' }
+            }
+
+            await Users.create({
+                name: data.name,
+                email: data.email,
+                password: data.password,
+                id_profile: 2,
+            });
+
+            return { success: "success", message: 'Usuário cadastrado com sucesso.' };
+
+        } catch (error) {
+            console.error(error);
+            return { success: "error", message: 'Erro ao criar usuário' };
+        }
+    }
+
 
     public async logout(auth, response) {
+
         try {
             await auth.use('api').revoke()
             return {

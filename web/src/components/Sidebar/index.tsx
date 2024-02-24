@@ -17,10 +17,10 @@ const Sidebar = ({ mobileOpen, handleDrawerClose }: any) => {
     const [alertInfo, setAlertInfo] = useState<{
         severity: AlertColor;
         message: string;
-      }>({
+    }>({
         severity: "error", // Isso garante que severity seja do tipo AlertColor
         message: "",
-      });
+    });
     useEffect(() => {
         fetchUserSettings();
     }, []);
@@ -33,6 +33,10 @@ const Sidebar = ({ mobileOpen, handleDrawerClose }: any) => {
             console.error('Erro ao solicitar dados do usuário:', error);
             setAlertInfo({ severity: 'error', message: 'Falha ao solicitar dados do usuário!' });
         }
+    };
+
+    const handleAlertClose = () => {
+        setAlertInfo({ ...alertInfo, message: "" });
     };
 
     const handleLogout = async () => {
@@ -100,7 +104,13 @@ const Sidebar = ({ mobileOpen, handleDrawerClose }: any) => {
                 handleChange={handleChange}
                 handleSaveChanges={handleSaveChanges}
             />
-            <CustomAlert severity={alertInfo.severity} message={alertInfo.message} />
+            {alertInfo.message && (
+                <CustomAlert
+                    severity={alertInfo.severity}
+                    message={alertInfo.message}
+                    onClose={handleAlertClose}
+                />
+            )}
         </Box>
     );
 };

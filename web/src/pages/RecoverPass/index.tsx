@@ -12,9 +12,9 @@ import {
   ThemeProvider,
   AlertColor,
 } from '@mui/material';
-import themeMonocromatico from '../../components/Theme';
 import CustomAlert from '../../components/CustomAlert'; // Importação do CustomAlert
 import Logo from "../../assets/images/logo.png";
+import monochrome from '../../Themes/Monochrome';
 
 const RecoverPass = () => {
   const navigate = useNavigate();
@@ -29,6 +29,10 @@ const RecoverPass = () => {
     severity: "error", // Isso garante que severity seja do tipo AlertColor
     message: "",
   });
+
+  const handleAlertClose = () => {
+    setAlertInfo({ ...alertInfo, message: "" });
+};
 
   const validatePasswords = () => {
     if (password !== confirmPassword) {
@@ -77,7 +81,7 @@ const RecoverPass = () => {
   };
 
   return (
-    <ThemeProvider theme={themeMonocromatico}>
+    <ThemeProvider theme={monochrome}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -139,10 +143,13 @@ const RecoverPass = () => {
           </Box>
         </Box>
       </Container>
-      <CustomAlert
-        severity={alertInfo.severity}
-        message={alertInfo.message}
-      />
+      {alertInfo.message && (
+        <CustomAlert
+          severity={alertInfo.severity}
+          message={alertInfo.message}
+          onClose={handleAlertClose}
+        />
+      )}
 
     </ThemeProvider>
   );

@@ -13,13 +13,12 @@ import {
 } from "@mui/material";
 
 import { ThemeProvider } from "@mui/material/styles";
-import themeMonocromatico from "../../components/Theme";
 import Logo from "../../assets/images/logo.png";
 import CustomAlert from "../../components/CustomAlert";
 import ForgotPasswordDialog from './components/ForgotPasswordDialog';
 import LoginForm from './components/LoginForm';
-
-
+import monochrome from '../../Themes/Monochrome';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function Login() {
   function Copyright(props: any) {
@@ -31,7 +30,8 @@ export default function Login() {
         {...props}
       >
         {"Copyright © "}
-        <Link color="inherit" href="https://swiftsoft.com.br/">
+        <Link href="https://swiftsoft.com.br/" target="_blank" rel="noopener noreferrer" variant="body2">
+
           Swift Soft
         </Link>{" "}
         {new Date().getFullYear()}
@@ -41,6 +41,8 @@ export default function Login() {
   }
 
   const navigate = useNavigate();
+  const { updateUserAccessLevel, setIsAuthenticated } = useAuth();
+
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
@@ -56,6 +58,10 @@ export default function Login() {
 
   const [openForgotPassword, setOpenForgotPassword] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+
+  const handleAlertClose = () => {
+    setAlertInfo({ ...alertInfo, message: "" });
+  };
 
   const handleOpenForgotPassword = () => {
     setOpenForgotPassword(true);
@@ -89,7 +95,7 @@ export default function Login() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+
     const data = new FormData(event.currentTarget);
     const email = data.get("email") as string;
     const password = data.get("password") as string;
@@ -99,21 +105,28 @@ export default function Login() {
       try {
         const response = await api.post("login", { email, password });
         const token = response.data.token;
-
-        // Sucesso no login
+        const userAccessLevel = response.data.user.id_profile;
         if (token) {
-          const expirationDate = new Date(token.expires_at);
-          const currentDate = new Date();
-          if (expirationDate > currentDate) {
-            localStorage.setItem("token", token.token);
-            navigate("/home")
+          localStorage.setItem("token", token.token);
+          updateUserAccessLevel(userAccessLevel);
+          setIsAuthenticated(true);
 
+          if (userAccessLevel == 1) {
+            navigate("/admin/dashboard");
+          } else if (userAccessLevel == 2) {
+            navigate("/cliente/dashboard");
           } else {
             setAlertInfo({
               severity: "error",
-              message: "O token de autenticação expirou. Faça login novamente.",
+              message: "Nível de acesso não reconhecido.",
             });
           }
+
+        } else {
+          setAlertInfo({
+            severity: "error",
+            message: "Falha na autenticação, token não fornecido.",
+          });
         }
       } catch (error: any) {
         let errorMessage = "Ocorreu um erro ao tentar realizar o login.";
@@ -128,8 +141,8 @@ export default function Login() {
         setLoginLoading(false);
       }
     }
-
   };
+
 
   const handleForgotPasswordSubmit = async () => {
     setResetPasswordLoading(true);
@@ -161,7 +174,7 @@ export default function Login() {
   };
 
   return (
-    <ThemeProvider theme={themeMonocromatico}>
+    <ThemeProvider theme={monochrome}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -198,9 +211,9 @@ export default function Login() {
               resetPasswordLoading={resetPasswordLoading}
             />
 
-            <Grid container>
+            <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="registro" variant="body2" >
                   {"Não tem uma conta? Registre-se"}
                 </Link>
               </Grid>
@@ -209,10 +222,13 @@ export default function Login() {
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
-      <CustomAlert
-        severity={alertInfo.severity}
-        message={alertInfo.message}
-      />
+      {alertInfo.message && (
+        <CustomAlert
+          severity={alertInfo.severity}
+          message={alertInfo.message}
+          onClose={handleAlertClose}
+        />
+      )}
 
     </ThemeProvider>
   );

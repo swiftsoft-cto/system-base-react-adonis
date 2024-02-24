@@ -14,7 +14,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
   emailError,
   passwordError,
   loginLoading,
-  handleSubmit,
   handleOpenForgotPassword,
 }) => {
   return (

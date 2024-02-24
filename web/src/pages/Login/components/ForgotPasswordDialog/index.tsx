@@ -40,7 +40,7 @@ const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({
           />
         </DialogContent>
         <DialogActions>
-          <Button>Cancelar</Button>
+          <Button onClick={handleClose}>Cancelar</Button>
 
           <Button onClick={handleForgotPasswordSubmit} disabled={resetPasswordLoading}>
             {resetPasswordLoading ? <CircularProgress size={24} /> : "Enviar"}

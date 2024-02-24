@@ -10,6 +10,7 @@ import Route from '@ioc:Adonis/Core/Route'
 Route.group(() => {
   Route.post('login', 'AuthController.login')
   Route.post('logout', 'AuthController.logout')
+  Route.post('register', 'AuthController.register')
   Route.get('validate-token', 'AuthController.validateToken')
   Route.post('reset-password', 'AuthController.resetPassword')
 }).prefix('api')

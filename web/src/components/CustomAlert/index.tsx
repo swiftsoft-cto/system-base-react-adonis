@@ -4,26 +4,22 @@ import { Snackbar, Alert, AlertColor } from '@mui/material';
 interface CustomAlertProps {
   severity: AlertColor;
   message: string;
+  onClose?: () => void; 
 }
 
-const CustomAlert: React.FC<CustomAlertProps> = ({ severity, message }) => {
-  // Inicia com open falso e só abre se houver mensagem
+const CustomAlert: React.FC<CustomAlertProps> = ({ severity, message, onClose }) => {
   const [open, setOpen] = useState(false);
 
-  // Efeito para abrir o alerta automaticamente quando há uma mensagem
   useEffect(() => {
-    if (message) {
-      setOpen(true); // Abre o alerta se houver mensagem
-    } else {
-      setOpen(false); // Mantém o alerta fechado se não houver mensagem
-    }
-  }, [message]); // Dependência do efeito é a mensagem
+    setOpen(!!message);
+  }, [message]);
 
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
-    setOpen(false); // Fecha o alerta
+    setOpen(false);
+    onClose?.(); 
   };
 
   return (

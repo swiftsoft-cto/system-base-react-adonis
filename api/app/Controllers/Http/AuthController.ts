@@ -10,15 +10,19 @@ export default class AuthController {
 
     public async validateToken({ auth, response }: HttpContextContract) {
         try {
-            await auth.authenticate()
-            return response.status(200).json({ isValid: true })
-        } catch (error) {
-            if (error.name === 'TokenExpiredException') {
-                return response.status(401).json({ isValid: false, message: 'Token expirado' })
+            await auth.check(); 
+            const user = auth.user; 
+    
+            if (user) {
+                return response.json({ isValid: true, id_profile: user.id_profile });
+            } else {
+                return response.json({ isValid: false, message: 'Não foi possível recuperar as informações do usuário.' });
             }
-            return response.status(401).json({ isValid: false, message: 'Token inválido' })
+        } catch (error) {
+            return response.status(401).json({ isValid: false, message: 'Token inválido ou expirado.' });
         }
     }
+    
 
     public async resetPassword({ request, response }: HttpContextContract) {
         try {
@@ -67,6 +71,12 @@ export default class AuthController {
         const password = request.input('password')
 
         return await this.authService.login(auth, email, password, response)
+    }
+
+    public async register({ request}: HttpContextContract) {
+        const data = request.body();
+   
+        return await this.authService.register(data)
     }
 
     public async logout({ auth, response }: HttpContextContract) {
