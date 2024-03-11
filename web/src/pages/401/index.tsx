@@ -7,7 +7,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 const Unauthorized: React.FC = () => {
     const { userAccessLevel } = useAuth();
-    const dashboardPath = userAccessLevel === 1 ? '/admin/dashboard' : userAccessLevel === 2 ? '/cliente/dashboard' : '/';
+    const dashboardPath = userAccessLevel === 1 ? '/admin/projetos/software' : userAccessLevel === 2 ? '/cliente/projetos/software' : '/';
 
     const navigate = useNavigate();
 

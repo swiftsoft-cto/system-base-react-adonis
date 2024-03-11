@@ -8,7 +8,7 @@ interface AuthContextData {
     validateToken: () => Promise<void>;
     loading: boolean;
     updateUserAccessLevel: (level: number) => void;
-    setIsAuthenticated: (value: boolean) => void; // Adicione esta linha
+    setIsAuthenticated: (value: boolean) => void; 
 }
 
 
@@ -20,7 +20,7 @@ interface AuthProviderProps {
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false); // Mantenha esta linha como está
+    const [isAuthenticated, setIsAuthenticated] = useState(false); 
     const [userAccessLevel, setUserAccessLevel] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             loading,
             validateToken,
             updateUserAccessLevel,
-            setIsAuthenticated, // Isso refere-se à função de atualização do useState
+            setIsAuthenticated,
         }}>
             {children}
         </AuthContext.Provider>

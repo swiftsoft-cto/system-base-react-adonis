@@ -4,22 +4,22 @@ const monochrome = createTheme({
     palette: {
         primary: {
             main: '#222',
-            contrastText: '#fff', 
+            contrastText: '#fff',
         },
         secondary: {
-            main: '#777', 
-            contrastText: '#fff', 
+            main: '#777',
+            contrastText: '#fff',
         },
         error: {
-            main: '#d32f2f', 
+            main: '#d32f2f',
         },
         background: {
-            default: '#f0f2f5', 
-            paper: '#ffffff', 
+            default: '#f0f2f5',
+            paper: '#ffffff',
         },
         text: {
-            primary: '#333', 
-            secondary: '#555', 
+            primary: '#333',
+            secondary: '#555',
         },
     },
     typography: {
@@ -37,8 +37,8 @@ const monochrome = createTheme({
         MuiAppBar: {
             styleOverrides: {
                 root: {
-                    backgroundColor: '#333', 
-                    color: '#fff', 
+                    backgroundColor: '#333',
+                    color: '#fff',
                 },
             },
         },
@@ -48,7 +48,7 @@ const monochrome = createTheme({
                     textTransform: 'none',
                 },
                 containedPrimary: {
-                    color: '#fff', 
+                    color: '#fff',
                 },
             },
         },
@@ -59,7 +59,7 @@ const monochrome = createTheme({
                         borderBottom: '2px solid #555',
                     },
                     '&:after': {
-                        borderBottom: '2px solid #555', 
+                        borderBottom: '2px solid #555',
                     },
                 },
             },
@@ -68,7 +68,7 @@ const monochrome = createTheme({
             styleOverrides: {
                 root: {
                     '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#333', 
+                        borderColor: '#333',
                     },
                 },
                 notchedOutline: {
@@ -79,11 +79,73 @@ const monochrome = createTheme({
         MuiLink: {
             styleOverrides: {
                 root: {
-                    color: '#333', 
-                    textDecoration: 'underline', 
+                    color: '#333',
+                    textDecoration: 'underline',
                     '&:hover': {
-                        color: '#666', 
+                        color: '#666',
                     },
+                },
+            },
+        },
+        MuiTable: {
+            styleOverrides: {
+                root: {
+                   
+                },
+            },
+        },
+        MuiPaper: {
+            styleOverrides: {
+                root: {
+                    boxShadow: 'none', 
+                    border: '1px solid #e0e0e0',
+                },
+            },
+        },
+        MuiTableHead: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#fff', 
+                },
+            },
+        },
+        MuiTableBody: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#fff',
+                },
+            },
+        },
+        MuiTableCell: {
+            styleOverrides: {
+                root: {
+                    borderBottom: '1px solid #e0e0e0', // Adiciona uma borda no fundo de cada célula da tabela
+                },
+                head: {
+                    color: '#333',
+                    fontWeight: 'bold', 
+                },
+                body: {
+                    color: '#555', 
+                },
+            },
+        },
+        MuiTableRow: {
+            styleOverrides: {
+                root: {
+                    '&:nth-of-type(odd)': {
+                        backgroundColor: '#f7f7f7',
+                    },
+                 
+                    '&:hover': {
+                        backgroundColor: '#f2f2f2',
+                    },
+                },
+            },
+        },
+        MuiTablePagination: {
+            styleOverrides: {
+                root: {
                 },
             },
         },

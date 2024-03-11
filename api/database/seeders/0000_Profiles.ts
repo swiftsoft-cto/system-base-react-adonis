@@ -1,18 +1,16 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
-import PgrPerfis from 'App/Models/Perfis'
+import Profiles from 'App/Models/Profiles'
 
-export default class PgrPerfisSeeder extends BaseSeeder {
+export default class ProfilesSeeder extends BaseSeeder {
 
     public async run() {
-        await PgrPerfis.createMany([
+        await Profiles.createMany([
             {
                 name: 'admin'
             },
             {
                 name: 'cliente',
             },
-
-
         ])
     }
 

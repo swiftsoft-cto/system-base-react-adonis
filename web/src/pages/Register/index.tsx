@@ -133,9 +133,9 @@ export default function Register() {
                         setIsAuthenticated(true);
 
                         if (userAccessLevel == 1) {
-                            navigate("/admin/dashboard");
+                            navigate("/admin/projetos/software");
                         } else if (userAccessLevel == 2) {
-                            navigate("/cliente/dashboard");
+                            navigate("/cliente/projetos/software");
                         } else {
                             setAlertInfo({
                                 severity: "error",

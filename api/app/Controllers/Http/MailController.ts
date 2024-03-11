@@ -8,15 +8,6 @@ import Users from 'App/Models/Users';
 
 export default class UsersController {
 
-  // public async sendMail({ request, response }: HttpContextContract) {
-  //   const { email } = request.only(['email']);
-
-  //   // Use o serviço para enviar o e-mail
-  //   await MailService.sendRecoveryEmail(email);
-
-  //   return response.ok({ message: 'E-mail enviado.' });
-  // }
-
   public async recoverToken({ request, response }: HttpContextContract) {
     const email = request.input('email');
     const user = await Users.findByOrFail('email', email);

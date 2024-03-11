@@ -30,6 +30,9 @@ export default class Users extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updated_at: DateTime
 
+  @column.dateTime({ autoCreate: false, autoUpdate: false })
+  public deleted_at: DateTime;
+
   @beforeCreate()
   public static assignUuid(usuario: Users) {
     usuario.id_secure = uuidv4()

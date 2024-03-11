@@ -1,13 +1,14 @@
 import React from 'react';
 import { useMatch, Link as RouterLink } from 'react-router-dom';
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Box } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import TerminalIcon from '@mui/icons-material/Terminal';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import PaymentIcon from '@mui/icons-material/Payment';
 import HistoryIcon from '@mui/icons-material/History';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { useAuth } from '../../contexts/AuthContext'; 
+import CampaignIcon from '@mui/icons-material/Campaign';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface SidebarNavListProps {
     handleOpenSettings: () => void;
@@ -17,8 +18,11 @@ interface SidebarNavListProps {
 const SidebarNavList: React.FC<SidebarNavListProps> = ({ handleOpenSettings, handleLogout }) => {
     const { userAccessLevel } = useAuth();
 
-    const dashboardPath = userAccessLevel === 1 ? '/admin/dashboard' : '/cliente/dashboard';
-    const matchDashboard = useMatch(dashboardPath);
+    const softwarePath = userAccessLevel === 1 ? '/admin/projetos/software' : '/cliente/projetos/software';
+    const matchSoftware = useMatch(softwarePath);
+
+    const trafegoPath = userAccessLevel === 1 ? '/admin/projetos/trafego' : '/cliente/projetos/trafego';
+    const matchTrafego = useMatch(trafegoPath);
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -28,23 +32,42 @@ const SidebarNavList: React.FC<SidebarNavListProps> = ({ handleOpenSettings, han
                     <ListItem>
                         <ListItemText primary="Projetos" />
                     </ListItem>
+
                     <ListItem disablePadding>
                         <ListItemButton
-                            component={RouterLink}
-                            to={dashboardPath}
+                            component={RouterLink} to={softwarePath}
                             sx={{
-                                backgroundColor: matchDashboard ? 'action.selected' : 'transparent', 
+                                backgroundColor: matchSoftware ? 'action.selected' : 'transparent',
                                 '&:hover': {
                                     backgroundColor: 'action.hover',
                                 },
                             }}
                         >
                             <ListItemIcon>
-                                <DashboardIcon />
+                                <TerminalIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Dashboard" />
+                            <ListItemText primary="Software" />
                         </ListItemButton>
                     </ListItem>
+
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            component={RouterLink}
+                            to={trafegoPath}
+                            sx={{
+                                backgroundColor: matchTrafego ? 'action.selected' : 'transparent',
+                                '&:hover': {
+                                    backgroundColor: 'action.hover',
+                                },
+                            }}
+                        >
+                            <ListItemIcon>
+                                <CampaignIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Tráfego Pago" />
+                        </ListItemButton>
+                    </ListItem>
+
                 </List>
                 <Divider />
                 <List>

@@ -4,11 +4,12 @@ import { AuthProvider } from "./contexts/AuthContext";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import RecoverPass from "./pages/RecoverPass";
-import ClientProject from "./pages/Client/Project";
 import PrivateRoute from "./utils/PrivateRoute";
 import Unauthorized from "./pages/401";
 import Register from "./pages/Register";
 import NotFound from "./pages/404";
+import AdminProject from "./pages/Admin/Project/Software";
+import ClientProject from "./pages/Client/Project/Software";
 
 export default function App() {
   return (
@@ -27,11 +28,11 @@ export default function App() {
           </Route>
 
           <Route element={<PrivateRoute accessLevel={1} />}>
-            <Route path="/admin/dashboard" element={<ClientProject />} />
+            <Route path="/admin/projetos/software/" element={<AdminProject />} />
           </Route>
 
           <Route element={<PrivateRoute accessLevel={2} />}>
-            <Route path="/cliente/dashboard" element={<ClientProject />} />
+            <Route path="/cliente/projetos/software/" element={<ClientProject />} />
           </Route>
 
           <Route path="/unauthorized" element={<Unauthorized />} />

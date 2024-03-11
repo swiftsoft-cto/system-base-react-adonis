@@ -8,7 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 const NotFound: React.FC = () => {
     const navigate = useNavigate();
     const { userAccessLevel } = useAuth();
-    const dashboardPath = userAccessLevel === 1 ? '/admin/dashboard' : userAccessLevel === 2 ? '/cliente/dashboard' : '/';
+    const dashboardPath = userAccessLevel === 1 ? '/admin/projetos/software' : userAccessLevel === 2 ? '/cliente/projetos/software' : '/';
 
     const handleGoBack = () => {
         navigate(dashboardPath);

@@ -8,6 +8,7 @@ interface CustomAlertProps {
 }
 
 const CustomAlert: React.FC<CustomAlertProps> = ({ severity, message, onClose }) => {
+  
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
